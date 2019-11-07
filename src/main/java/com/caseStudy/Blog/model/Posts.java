@@ -2,7 +2,7 @@ package com.caseStudy.Blog.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 public class Posts implements Serializable {
@@ -21,7 +21,7 @@ public class Posts implements Serializable {
     private String content;
 
     @Column(nullable = false)
-    private Date date;
+    private LocalDate date;
 
     @Column(nullable = false)
     private String image;
@@ -30,13 +30,19 @@ public class Posts implements Serializable {
     private Long authorId;
 
     @Column(nullable = false)
-    private int isPrivate;
+    private Integer isPrivate;
 
     @Column(nullable = false)
     private Long visited;
 
     @Column(nullable = false)
     private String category;
+
+    @Column(nullable = false)
+    private Long likes;
+
+    @Column(nullable = false)
+    private Long dislikes;
 
     public Posts() {
     }
@@ -73,11 +79,11 @@ public class Posts implements Serializable {
         this.content = content;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -97,14 +103,6 @@ public class Posts implements Serializable {
         this.authorId = authorId;
     }
 
-    public int getPrivate() {
-        return isPrivate;
-    }
-
-    public void setPrivate(int isPrivate) {
-        this.isPrivate = isPrivate;
-    }
-
     public Long getVisited() {
         return visited;
     }
@@ -119,5 +117,29 @@ public class Posts implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Integer getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Integer isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public Long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Long likes) {
+        this.likes = likes;
+    }
+
+    public Long getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(Long dislikes) {
+        this.dislikes = dislikes;
     }
 }

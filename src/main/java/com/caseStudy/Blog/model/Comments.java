@@ -2,23 +2,20 @@ package com.caseStudy.Blog.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
-public class CommentsAndLikes implements Serializable {
+public class Comments implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String content;
 
-    @Column
-    private Boolean liked;
-
     @Column(nullable = false)
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne
     private Users user;
@@ -26,7 +23,10 @@ public class CommentsAndLikes implements Serializable {
     @ManyToOne
     private Posts post;
 
-    public CommentsAndLikes() {
+    @Column(nullable = false)
+    private long likes;
+
+    public Comments() {
     }
 
     public Long getId() {
@@ -45,19 +45,11 @@ public class CommentsAndLikes implements Serializable {
         this.content = content;
     }
 
-    public Boolean getLiked() {
-        return liked;
-    }
-
-    public void setLiked(Boolean liked) {
-        this.liked = liked;
-    }
-
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -75,5 +67,13 @@ public class CommentsAndLikes implements Serializable {
 
     public void setPost(Posts post) {
         this.post = post;
+    }
+
+    public Long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Long likes) {
+        this.likes = likes;
     }
 }

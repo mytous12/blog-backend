@@ -3,12 +3,13 @@ package com.caseStudy.Blog.service;
 import com.caseStudy.Blog.model.Posts;
 import com.caseStudy.Blog.model.Users;
 import com.caseStudy.Blog.repository.PostsRepository;
+import com.caseStudy.Blog.repository.SubscribersRepository;
 import com.caseStudy.Blog.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.security.Principal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,26 +17,30 @@ import java.util.Optional;
 public class PostsService {
     private PostsRepository postsRepository;
     private UsersRepository usersRepository;
+    private SubscribersRepository subscribersRepository;
 
     @Autowired
-    public PostsService(PostsRepository postsRepository, UsersRepository usersRepository) {
+    public PostsService(PostsRepository postsRepository, UsersRepository usersRepository, SubscribersRepository subscribersRepository) {
         this.postsRepository = postsRepository;
         this.usersRepository = usersRepository;
+        this.subscribersRepository = subscribersRepository;
     }
 
 
     public List<Posts> addPost(Posts posts, Principal principal) {
         Users user = usersRepository.findByEmail(principal.getName()).get();
         posts.setAuthorId(user.getId());
-        posts.setDate(new Date());
+        posts.setDate(LocalDate.now());
         posts.setVisited(0L);
+        posts.setLikes(0L);
+        posts.setDislikes(0L);
 
         postsRepository.saveAndFlush(posts);
 
         return postsRepository.findAllByAuthorId(user.getId());
     }
 
-    public List<Posts> getPosts(Principal principal) {
+    public List<Posts> getMyPosts(Principal principal) {
         Users user = usersRepository.findByEmail(principal.getName()).get();
 
         return postsRepository.findAllByAuthorId(user.getId());
@@ -48,9 +53,18 @@ public class PostsService {
         return postsRepository.findAllByAuthorId(user.getId());
     }
 
-    public List<Posts> getPostByCategory(String category) {
+    public List<Posts> getPostsByCategory(String category) {
         return postsRepository.findAllByCategory(category);
     }
+
+    public List<Posts> getPostsByTitle(String title) {
+        return postsRepository.findAllByTitleContainingOrDescriptionContainingIgnoreCase(title, title);
+    }
+
+    public List<Posts> getPostsByDate(Integer year, Integer month, Integer day) {
+        return postsRepository.findAllByDate(LocalDate.of(year, month, day));
+    }
+
 
     public List<Posts> editPost(Posts newPost, Long id) {
         Posts oldPost = postsRepository.findById(id).get();
@@ -75,4 +89,37 @@ public class PostsService {
     public List<Posts> getPostsByAuthor(Long id) {
         return postsRepository.findAllByAuthorId(id);
     }
+
+    public Posts likePost(Long id) {
+        Posts post = postsRepository.findById(id).get();
+        post.setLikes(post.getLikes() + 1);
+        postsRepository.saveAndFlush(post);
+        return postsRepository.findById(id).get();
+    }
+
+    public Posts unlikePost(Long id) {
+        Posts post = postsRepository.findById(id).get();
+        post.setLikes(post.getLikes() - 1);
+        postsRepository.saveAndFlush(post);
+        return postsRepository.findById(id).get();
+    }
+
+    public Posts dislikePost(Long id) {
+        Posts post = postsRepository.findById(id).get();
+        post.setDislikes(post.getDislikes() + 1);
+        postsRepository.saveAndFlush(post);
+        return postsRepository.findById(id).get();
+    }
+
+    public Posts unDislikePost(Long id) {
+        Posts post = postsRepository.findById(id).get();
+        post.setDislikes(post.getDislikes() - 1);
+        postsRepository.saveAndFlush(post);
+        return postsRepository.findById(id).get();
+    }
+
+//    public List<Posts> getRecentFromSubscriptions(Principal principal) {
+//
+//    }
+
 }
