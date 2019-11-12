@@ -54,15 +54,15 @@ public class PostsService {
     }
 
     public List<Posts> getPostsByCategory(String category) {
-        return postsRepository.findAllByCategory(category);
+        return postsRepository.findAllByCategoryAndIsPrivate(category, 0);
     }
 
     public List<Posts> getPostsByTitle(String title) {
-        return postsRepository.findAllByTitleContainingOrDescriptionContainingIgnoreCase(title, title);
+        return postsRepository.findAllByTitleContainingOrDescriptionContainingIgnoreCaseAndIsPrivate(title, title,0);
     }
 
     public List<Posts> getPostsByDate(Integer year, Integer month, Integer day) {
-        return postsRepository.findAllByDate(LocalDate.of(year, month, day));
+        return postsRepository.findAllByDateAndIsPrivate(LocalDate.of(year, month, day), 0);
     }
 
 
@@ -87,7 +87,7 @@ public class PostsService {
     }
 
     public List<Posts> getPostsByAuthor(Long id) {
-        return postsRepository.findAllByAuthorId(id);
+        return postsRepository.findAllByAuthorIdAndIsPrivate(id, 0);
     }
 
     public Posts likePost(Long id) {

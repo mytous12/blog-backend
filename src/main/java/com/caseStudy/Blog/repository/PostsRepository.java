@@ -9,11 +9,15 @@ import java.util.List;
 
 @Repository
 public interface PostsRepository extends JpaRepository<Posts, Long> {
+    List<Posts> findAllByAuthorIdAndIsPrivate(Long authorId, Integer isPrivate);
+
     List<Posts> findAllByAuthorId(Long authorId);
 
-    List<Posts> findAllByCategory(String category);
 
-    List<Posts> findAllByTitleContainingOrDescriptionContainingIgnoreCase(String keyword, String keyword2);
+    List<Posts> findAllByCategoryAndIsPrivate(String category, Integer isPrivate);
 
-    List<Posts> findAllByDate(LocalDate date);
+    List<Posts> findAllByTitleContainingOrDescriptionContainingIgnoreCaseAndIsPrivate(String keyword, String keyword2,
+                                                                                      Integer isPrivate);
+
+    List<Posts> findAllByDateAndIsPrivate(LocalDate date, Integer isPrivate);
 }
