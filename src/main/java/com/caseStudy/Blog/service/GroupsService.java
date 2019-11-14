@@ -92,6 +92,6 @@ public class GroupsService {
         UserGroups userGroups = userGroupsRepository.findById(groupId).get();
         Users users = userGroups.getOwner();
 
-        return postsRepository.findAllByAuthorIdAndIsPrivateOrderByDateDesc(users.getId(), 1);
+        return postsRepository.findAllByAuthorAndIsPrivateOrderByDateDesc(users, 1);
     }
 }

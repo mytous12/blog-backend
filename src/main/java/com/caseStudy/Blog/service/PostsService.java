@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,6 @@ public class PostsService {
         return postsRepository.findById(id).get();
     }
 
-
     public List<Posts> addPost(Posts posts, Principal principal) {
         Users user = usersRepository.findByEmail(principal.getName()).get();
         posts.setAuthor(user);
@@ -56,7 +56,7 @@ public class PostsService {
     public List<Posts> getMyPosts(Principal principal) {
         Users user = usersRepository.findByEmail(principal.getName()).get();
 
-        return postsRepository.findAllByAuthorAndIsPrivateOrderByDateDesc(user, 0);
+        return postsRepository.findAllByAuthorOrderByDateDesc(user);
     }
 
     public List<Posts> deletePost(Principal principal, Long id) {
@@ -109,7 +109,8 @@ public class PostsService {
     }
 
     public List<Posts> getPostsByAuthor(Long id) {
-        return postsRepository.findAllByAuthorIdAndIsPrivateOrderByDateDesc(id, 0);
+        Users users = usersRepository.findById(id).get();
+        return postsRepository.findAllByAuthorAndIsPrivateOrderByDateDesc(users, 0);
     }
 
     public Posts likePost(Long id) {
@@ -141,11 +142,20 @@ public class PostsService {
     }
 
     public List<Posts> getPopular() {
-        return postsRepository.findTop5ByOrderByVisitedDesc();
+        return postsRepository.findTop5ByIsPrivateOrderByVisitedDesc(0);
     }
 
     public String getAuthorName(Long id) {
         Users users = usersRepository.findById(id).get();
         return "\"" + users.getName() + "\"";
+    }
+
+    public List<Posts> findAllByAuthorName(String name) {
+        List<Users> usersList = usersRepository.findAllByNameContainingIgnoreCase(name);
+        List<Posts> postsList = new ArrayList<>();
+        for (Users users : usersList) {
+            postsList.addAll(postsRepository.findAllByAuthorAndIsPrivateOrderByDateDesc(users, 0));
+        }
+        return postsList;
     }
 }

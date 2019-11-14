@@ -60,4 +60,14 @@ public class UserController {
     public String getName(Principal principal) {
         return usersService.getName(principal);
     }
+
+    @GetMapping("/get-by-name")
+    public List<Users> getAllByName(@RequestParam String name) {
+        return usersService.getAllByName(name);
+    }
+
+    @GetMapping("get-by-id")
+    public Users getUserById(@RequestParam Long id) {
+        return usersService.getUserById(id);
+    }
 }

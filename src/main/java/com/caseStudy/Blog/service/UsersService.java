@@ -107,4 +107,8 @@ public class UsersService {
         Users users = usersRepository.findByEmail(principal.getName()).get();
         return "\"" + users.getName().split(" ")[0] + "\"";
     }
+
+    public List<Users> getAllByName(String name) {
+        return usersRepository.findAllByNameContainingIgnoreCase(name);
+    }
 }

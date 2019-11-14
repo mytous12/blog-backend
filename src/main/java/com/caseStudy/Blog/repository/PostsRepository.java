@@ -10,11 +10,9 @@ import java.util.List;
 
 @Repository
 public interface PostsRepository extends JpaRepository<Posts, Long> {
-    List<Posts> findAllByAuthorIdAndIsPrivateOrderByDateDesc(Long authorId, Integer isPrivate);
+    List<Posts> findAllByAuthorAndIsPrivateOrderByDateDesc(Users author, Integer isPrivate);
 
-    List<Posts> findAllByAuthorIdOrderByDateDesc(Long authorId);
-
-    List<Posts> findAllByAuthorAndIsPrivateOrderByDateDesc(Users author,Integer isPrivate);
+    List<Posts> findAllByAuthorOrderByDateDesc(Users author);
 
     List<Posts> findAllByIsPrivateOrderByDateDesc(Integer isPrivate);
 
@@ -26,7 +24,7 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
 
     List<Posts> findAllByDescriptionContainingAndIsPrivateOrderByDateDesc(String description, Integer isPrivate);
 
-    List<Posts> findTop5ByOrderByVisitedDesc();
+    List<Posts> findTop5ByIsPrivateOrderByVisitedDesc(Integer isPrivate);
 
     List<Posts> findAllByDateAndIsPrivateOrderByDateDesc(LocalDate date, Integer isPrivate);
 }

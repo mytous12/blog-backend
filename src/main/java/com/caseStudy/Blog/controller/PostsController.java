@@ -110,4 +110,9 @@ public class PostsController {
     public String getAuthorName(@RequestParam Long id) {
         return postsService.getAuthorName(id);
     }
+
+    @GetMapping(path = "/get-by-author-name")
+    public List<Posts> findAllByAuthorName(@RequestParam String name) {
+        return postsService.findAllByAuthorName(name);
+    }
 }
