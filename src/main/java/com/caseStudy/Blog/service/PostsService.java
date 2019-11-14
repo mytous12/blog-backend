@@ -1,7 +1,9 @@
 package com.caseStudy.Blog.service;
 
+import com.caseStudy.Blog.model.Comments;
 import com.caseStudy.Blog.model.Posts;
 import com.caseStudy.Blog.model.Users;
+import com.caseStudy.Blog.repository.CommentsRepository;
 import com.caseStudy.Blog.repository.PostsRepository;
 import com.caseStudy.Blog.repository.SubscribersRepository;
 import com.caseStudy.Blog.repository.UsersRepository;
@@ -18,18 +20,29 @@ public class PostsService {
     private PostsRepository postsRepository;
     private UsersRepository usersRepository;
     private SubscribersRepository subscribersRepository;
+    private CommentsRepository commentsRepository;
 
     @Autowired
-    public PostsService(PostsRepository postsRepository, UsersRepository usersRepository, SubscribersRepository subscribersRepository) {
+    public PostsService(PostsRepository postsRepository, UsersRepository usersRepository,
+                        SubscribersRepository subscribersRepository, CommentsRepository commentsRepository) {
         this.postsRepository = postsRepository;
         this.usersRepository = usersRepository;
         this.subscribersRepository = subscribersRepository;
+        this.commentsRepository = commentsRepository;
+    }
+
+    public List<Posts> getAllPosts() {
+        return postsRepository.findAllByIsPrivateOrderByDateDesc(0);
+    }
+
+    public Posts getPostById(Long id) {
+        return postsRepository.findById(id).get();
     }
 
 
     public List<Posts> addPost(Posts posts, Principal principal) {
         Users user = usersRepository.findByEmail(principal.getName()).get();
-        posts.setAuthorId(user.getId());
+        posts.setAuthor(user);
         posts.setDate(LocalDate.now());
         posts.setVisited(0L);
         posts.setLikes(0L);
@@ -37,44 +50,53 @@ public class PostsService {
 
         postsRepository.saveAndFlush(posts);
 
-        return postsRepository.findAllByAuthorId(user.getId());
+        return postsRepository.findAllByAuthorOrderByDateDesc(user);
     }
 
     public List<Posts> getMyPosts(Principal principal) {
         Users user = usersRepository.findByEmail(principal.getName()).get();
 
-        return postsRepository.findAllByAuthorId(user.getId());
+        return postsRepository.findAllByAuthorOrderByDateDesc(user);
     }
 
     public List<Posts> deletePost(Principal principal, Long id) {
         Optional<Posts> posts = postsRepository.findById(id);
         Users user = usersRepository.findByEmail(principal.getName()).get();
-        posts.ifPresent(value -> postsRepository.delete(value));
-        return postsRepository.findAllByAuthorId(user.getId());
+        if (posts.isPresent()) {
+            for (Comments comments : commentsRepository.findAllByPost(posts.get())) {
+                commentsRepository.delete(comments);
+            }
+            postsRepository.delete(posts.get());
+        }
+        return postsRepository.findAllByAuthorOrderByDateDesc(user);
     }
 
     public List<Posts> getPostsByCategory(String category) {
-        return postsRepository.findAllByCategoryAndIsPrivate(category, 0);
+        return postsRepository.findAllByCategoryAndIsPrivateOrderByDateDesc(category, 0);
     }
 
     public List<Posts> getPostsByTitle(String title) {
-        return postsRepository.findAllByTitleContainingOrDescriptionContainingIgnoreCaseAndIsPrivate(title, title,0);
+        return postsRepository.findAllByTitleContainingAndIsPrivateOrderByDateDesc(title, 0);
+    }
+
+    public List<Posts> getPostsByDescription(String description) {
+        return postsRepository.findAllByDescriptionContainingAndIsPrivateOrderByDateDesc(description, 0);
     }
 
     public List<Posts> getPostsByDate(Integer year, Integer month, Integer day) {
-        return postsRepository.findAllByDateAndIsPrivate(LocalDate.of(year, month, day), 0);
+        return postsRepository.findAllByDateAndIsPrivateOrderByDateDesc(LocalDate.of(year, month, day), 0);
     }
 
 
     public List<Posts> editPost(Posts newPost, Long id) {
         Posts oldPost = postsRepository.findById(id).get();
-        newPost.setAuthorId(oldPost.getAuthorId());
+        newPost.setAuthor(oldPost.getAuthor());
         newPost.setVisited(oldPost.getVisited());
         newPost.setDate(oldPost.getDate());
         newPost.setId(oldPost.getId());
         postsRepository.saveAndFlush(newPost);
 
-        return postsRepository.findAllByAuthorId(newPost.getAuthorId());
+        return postsRepository.findAllByAuthorOrderByDateDesc(newPost.getAuthor());
 
     }
 
@@ -87,7 +109,7 @@ public class PostsService {
     }
 
     public List<Posts> getPostsByAuthor(Long id) {
-        return postsRepository.findAllByAuthorIdAndIsPrivate(id, 0);
+        return postsRepository.findAllByAuthorIdAndIsPrivateOrderByDateDesc(id, 0);
     }
 
     public Posts likePost(Long id) {
@@ -118,8 +140,12 @@ public class PostsService {
         return postsRepository.findById(id).get();
     }
 
-//    public List<Posts> getRecentFromSubscriptions(Principal principal) {
-//
-//    }
+    public List<Posts> getPopular() {
+        return postsRepository.findTop5ByOrderByVisitedDesc();
+    }
 
+    public String getAuthorName(Long id) {
+        Users users = usersRepository.findById(id).get();
+        return "\"" + users.getName() + "\"";
+    }
 }

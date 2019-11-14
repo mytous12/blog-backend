@@ -19,6 +19,16 @@ public class PostsController {
         this.postsService = postsService;
     }
 
+    @GetMapping(path = "/get-all", produces = "application/json")
+    public List<Posts> getAllPosts() {
+        return postsService.getAllPosts();
+    }
+
+    @GetMapping(path = "/get-by-id", produces = "application/json")
+    public Posts getPostById(@RequestParam Long id) {
+        return postsService.getPostById(id);
+    }
+
     @GetMapping(path = "/get", produces = "application/json")
     public List<Posts> getMyPosts(Principal principal) {
         return postsService.getMyPosts(principal);
@@ -37,6 +47,11 @@ public class PostsController {
     @GetMapping(path = "/get-by-title", produces = "application/json")
     public List<Posts> getPostsByTitle(@RequestParam(value = "title") String title) {
         return postsService.getPostsByTitle(title);
+    }
+
+    @GetMapping(path = "/get-by-description", produces = "application/json")
+    public List<Posts> getPostsByDescription(@RequestParam(value = "desc") String description) {
+        return postsService.getPostsByDescription(description);
     }
 
     @GetMapping(path = "/get-by-date", produces = "application/json")
@@ -84,5 +99,15 @@ public class PostsController {
     @PostMapping(path = "/un-dislike", produces = "application/json")
     public Posts unDislikePost(@RequestParam(value = "id") Long id) {
         return postsService.unDislikePost(id);
+    }
+
+    @GetMapping(path = "/popular", produces = "application/json")
+    public List<Posts> popularPosts() {
+        return postsService.getPopular();
+    }
+
+    @GetMapping(path = "/name", produces = "application/json")
+    public String getAuthorName(@RequestParam Long id) {
+        return postsService.getAuthorName(id);
     }
 }

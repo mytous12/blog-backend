@@ -55,4 +55,9 @@ public class UserController {
     public Boolean registerUser(@RequestBody Users user) {
         return usersService.addUser(user);
     }
+
+    @GetMapping("/name")
+    public String getName(Principal principal) {
+        return usersService.getName(principal);
+    }
 }

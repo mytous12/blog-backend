@@ -17,7 +17,7 @@ public class Posts implements Serializable {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10000)
     private String content;
 
     @Column(nullable = false)
@@ -26,8 +26,8 @@ public class Posts implements Serializable {
     @Column(nullable = false)
     private String image;
 
-    @Column(nullable = false)
-    private Long authorId;
+    @OneToOne
+    private Users author;
 
     @Column(nullable = false)
     private Integer isPrivate;
@@ -95,12 +95,12 @@ public class Posts implements Serializable {
         this.image = image;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Users getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setAuthor(Users author) {
+        this.author = author;
     }
 
     public Long getVisited() {

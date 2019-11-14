@@ -36,7 +36,7 @@ public class SubscribersService {
             subscribe = new Subscribers();
             subscribe.setAuthor(author);
             subscribe.setSubscriber(subscriber);
-
+            author.setSubscribers(author.getSubscribers() + 1);
             subscribersRepository.saveAndFlush(subscribe);
         }
         return subscribersRepository.findAllBySubscriber(subscriber);
@@ -46,6 +46,7 @@ public class SubscribersService {
         Users subscriber = usersRepository.findByEmail(principal.getName()).get();
         Users author = usersRepository.findById(id).get();
         Optional<Subscribers> optSubscribe = subscribersRepository.findBySubscriberAndAuthor(subscriber, author);
+        author.setSubscribers(author.getSubscribers() - 1);
         optSubscribe.ifPresent(subscribers -> subscribersRepository.delete(subscribers));
         return subscribersRepository.findAllBySubscriber(subscriber);
     }
@@ -53,5 +54,11 @@ public class SubscribersService {
     public List<Subscribers> subscriptions(Principal principal) {
         Users user = usersRepository.findByEmail(principal.getName()).get();
         return subscribersRepository.findAllBySubscriber(user);
+    }
+
+    public Boolean isSubsScribed(Principal principal, Long id) {
+        Users subscriber = usersRepository.findByEmail(principal.getName()).get();
+        Users author = usersRepository.findById(id).get();
+        return subscribersRepository.existsBySubscriberAndAuthor(subscriber, author);
     }
 }

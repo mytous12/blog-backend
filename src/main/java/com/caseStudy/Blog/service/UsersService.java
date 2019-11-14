@@ -30,6 +30,7 @@ public class UsersService {
             user.setRole("user");
         }
         user.setActive(1);
+        user.setSubscribers(0L);
         usersRepository.saveAndFlush(user);
         return true;
     }
@@ -48,6 +49,7 @@ public class UsersService {
         newUser.setId(oldUser.getId());
         newUser.setRole(oldUser.getRole());
         newUser.setActive(oldUser.getActive());
+        newUser.setSubscribers(oldUser.getSubscribers());
         usersRepository.saveAndFlush(newUser);
         return newUser;
     }
@@ -57,6 +59,7 @@ public class UsersService {
         newUser.setId(oldUser.getId());
         newUser.setRole(oldUser.getRole());
         newUser.setActive(oldUser.getActive());
+        newUser.setSubscribers(oldUser.getSubscribers());
         usersRepository.saveAndFlush(newUser);
         return usersRepository.findAll();
     }
@@ -98,5 +101,10 @@ public class UsersService {
         }
         usersRepository.saveAndFlush(user);
         return usersRepository.findAll();
+    }
+
+    public String getName(Principal principal) {
+        Users users = usersRepository.findByEmail(principal.getName()).get();
+        return "\"" + users.getName().split(" ")[0] + "\"";
     }
 }

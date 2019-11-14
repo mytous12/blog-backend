@@ -14,5 +14,7 @@ public interface SubscribersRepository extends JpaRepository<Subscribers, Long> 
 
     List<Subscribers> findAllBySubscriber(Users subscriber);
 
+    Boolean existsBySubscriberAndAuthor(Users subscriber, Users Author);
+
     Optional<Subscribers> findBySubscriberAndAuthor(Users subscriber, Users Author);
 }

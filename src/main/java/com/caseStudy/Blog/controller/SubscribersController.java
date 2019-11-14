@@ -20,22 +20,27 @@ public class SubscribersController {
         this.subscribersService = subscribersService;
     }
 
-    @GetMapping(value = "get-subscribers", produces = "application/json")
+    @GetMapping(value = "/get-subscribers", produces = "application/json")
     public List<Subscribers> getSubscribers(Principal principal) {
         return subscribersService.getSubscribers(principal);
     }
 
-    @PostMapping(value = "subscribe", produces = "application/json")
+    @GetMapping(value = "/subscribed", produces = "application/json")
+    public Boolean getSubscribers(Principal principal, @RequestParam Long id) {
+        return subscribersService.isSubsScribed(principal, id);
+    }
+
+    @PostMapping(value = "/subscribe", produces = "application/json")
     public List<Subscribers> subscribe(Principal principal, @RequestParam Long id) {
         return subscribersService.subscribe(principal, id);
     }
 
-    @PostMapping(value = "unsubscribe", produces = "application/json")
+    @PostMapping(value = "/unsubscribe", produces = "application/json")
     public List<Subscribers> unsubscribe(Principal principal, @RequestParam Long id) {
         return subscribersService.unsubscribe(principal, id);
     }
 
-    @GetMapping(value = "subscription", produces = "application/json")
+    @GetMapping(value = "/subscription", produces = "application/json")
     public List<Subscribers> subscription(Principal principal) {
         return subscribersService.subscriptions(principal);
     }

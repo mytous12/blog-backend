@@ -25,6 +25,9 @@ public class Users implements Serializable {
     @Column(columnDefinition = "varchar(255) default 'user'")
     private String role;
 
+    @Column(nullable = false)
+    private Long subscribers;
+
     public Users() {
 
     }
@@ -75,5 +78,13 @@ public class Users implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Long getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(Long subscribers) {
+        this.subscribers = subscribers;
     }
 }
