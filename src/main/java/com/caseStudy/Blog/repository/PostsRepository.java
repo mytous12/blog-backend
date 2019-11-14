@@ -14,7 +14,7 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
 
     List<Posts> findAllByAuthorIdOrderByDateDesc(Long authorId);
 
-    List<Posts> findAllByAuthorOrderAndIsPrivateByDateDesc(Users author, Integer);
+    List<Posts> findAllByAuthorAndIsPrivateOrderByDateDesc(Users author,Integer isPrivate);
 
     List<Posts> findAllByIsPrivateOrderByDateDesc(Integer isPrivate);
 

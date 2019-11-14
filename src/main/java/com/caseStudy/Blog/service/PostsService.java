@@ -50,13 +50,13 @@ public class PostsService {
 
         postsRepository.saveAndFlush(posts);
 
-        return postsRepository.findAllByAuthorOrderByDateDesc(user);
+        return postsRepository.findAllByAuthorAndIsPrivateOrderByDateDesc(user, 0);
     }
 
     public List<Posts> getMyPosts(Principal principal) {
         Users user = usersRepository.findByEmail(principal.getName()).get();
 
-        return postsRepository.findAllByAuthorOrderByDateDesc(user);
+        return postsRepository.findAllByAuthorAndIsPrivateOrderByDateDesc(user, 0);
     }
 
     public List<Posts> deletePost(Principal principal, Long id) {
@@ -68,7 +68,7 @@ public class PostsService {
             }
             postsRepository.delete(posts.get());
         }
-        return postsRepository.findAllByAuthorOrderByDateDesc(user);
+        return postsRepository.findAllByAuthorAndIsPrivateOrderByDateDesc(user, 0);
     }
 
     public List<Posts> getPostsByCategory(String category) {
@@ -96,7 +96,7 @@ public class PostsService {
         newPost.setId(oldPost.getId());
         postsRepository.saveAndFlush(newPost);
 
-        return postsRepository.findAllByAuthorOrderByDateDesc(newPost.getAuthor());
+        return postsRepository.findAllByAuthorAndIsPrivateOrderByDateDesc(newPost.getAuthor(), 0);
 
     }
 
